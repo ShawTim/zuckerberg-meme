@@ -1,0 +1,72 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#">
+  <head>
+    <title>Mark Zuckerberg meme generator</title>
+    <meta charset="utf8">
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <script type="text/javascript" src="./LZWEncoder.js"></script>
+    <script type="text/javascript" src="./NeuQuant.js"></script>
+    <script type="text/javascript" src="./GIFEncoder.js"></script>
+    <script type="text/javascript" src="./bundle.min.js"></script>
+    <script type="text/javascript" src="https://shawtim.github.io/doge/doge.min.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114319536-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-114319536-1');
+    </script>
+		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		<script>
+			(adsbygoogle = window.adsbygoogle || []).push({
+				google_ad_client: "ca-pub-6899345070228180",
+				enable_page_level_ads: true
+			});
+		</script>
+  </head>
+  <body>
+    <div id="image-container">
+      <img src="./images/default.gif" />
+    </div>
+    <div class="subtitle-container" title="You can input the subtitles here.">
+      <div><label for="subtitle01">Orrin Hatch:</label><input id="subtitle01" type="text" placeholder="How do you sustain a business model in which users don't pay for your service?" /></div>
+      <div><label for="subtitle02">Mark Zuckerberg:</label><input id="subtitle02" type="text" placeholder="Senator, we run ads." /></div>
+      <div><label for="subtitle03">(Smirk silently)</label><input id="subtitle03" type="text" placeholder="(Analytics Data Selling)" /></div>
+    </div>
+    <div class="options-container" title="You can configure the generator setting here.">
+      <div>
+        <span>Smoothness</span>
+        <input type="radio" name="rate" id="high-rate" value="1"/>
+        <label for="high-rate">Normal</label>
+        <input type="radio" name="rate" id="low-rate" value="2"/>
+        <label for="low-rate">Low</label>
+      </div>
+      <div>
+        <span>Picture size</span>
+        <input type="radio" name="scale" id="scale-100" value="1"/>
+        <label for="scale-100">100%</label>
+        <input type="radio" name="scale" id="scale-70" value="0.7"/>
+        <label for="scale-70">70%</label>
+        <input type="radio" name="scale" id="scale-50" value="0.5"/>
+        <label for="scale-50">50%</label>
+      </div>
+      <div class="info">
+        <label for="file-size">Estimated file size:</label>
+        <input type="text" id="file-size" value="" readonly />
+      </div>
+      <div class="info">
+        <div class="warning-text">*It takes your browser power to generate,</div>
+        <div class="warning-text">so please review your device spec</div>
+        <div class="warning-text">to make sure the process goes smooth.</div>
+      </div>
+    </div>
+    <div class="convert-button">
+      <button id="render-button">Generate</button>
+      <button id="download-button">Download</button>
+    </div>
+    <div class="footer">
+      <a href="https://github.com/ShawTim/zuckerberg-meme" target="_blank"><img src="./images/github.png"/></a>
+      <span>Created by <a href="https://github.com/ShawTim" target="_blank">ShawTim</a>.</span>
+    </div>
+  </body>
+</html>
