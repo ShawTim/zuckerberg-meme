@@ -1,12 +1,19 @@
-import images from "./images";
 import tippy from 'tippy.js';
 import FileSaver from "file-saver";
 import ProgressBar from "progressbar.js";
 
+import werunads from "./werunads";
+import no from "./no";
+
+let current = "werunads";
 let progressbar;
 let blob;
 let blobURL;
-let avatar = {};
+
+const allMeme = {
+  werunads,
+  no,
+};
 
 const WIDTH = 400;
 const HEIGHT = 400;
@@ -35,14 +42,10 @@ const setProgressBar = (progress) => {
 };
 
 const getSubtitle = (index) => {
-  let id;
+  const id = allMeme[current].subtitles.findIndex((subtitle) => subtitle.from <= index && subtitle.to >= index);
 
-  if (index <= 44) id = "subtitle01";
-  else if (index >= 63 && index <= 82) id = "subtitle02";
-  else if (index >= 83) id = "subtitle03";
-
-  if (!!id) {
-    const subtitle = document.getElementById(id);
+  if (id >= 0) {
+    const subtitle = document.getElementById(`subtitle-${id}`);
     return subtitle.value || subtitle.placeholder;
   } else {
     return null;
@@ -84,7 +87,7 @@ const fillSubtitle = (context, subtitle, scale) => {
   }
 };
 
-const convertGif = (encoder, container, rate, scale, renderBtn, downloadBtn) => {
+const convertGif = (encoder, container, rate, scale, subtitleInputs, renderBtn, downloadBtn) => {
   
   const canvas = document.createElement("canvas");
   canvas.setAttribute("width", WIDTH * scale);
@@ -101,9 +104,9 @@ const convertGif = (encoder, container, rate, scale, renderBtn, downloadBtn) => 
 
   const addFrame = (callback) => {
     const img = new Image();
-    img.src = images[index];
+    img.src = allMeme[current].images[index];
     img.onload = () => {
-      setProgressBar(index/images.length);
+      setProgressBar(index/allMeme[current].images.length);
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.drawImage(img, 0, 0, canvas.width, canvas.height);
       fillSubtitle(context, getSubtitle(index), scale);
@@ -114,7 +117,7 @@ const convertGif = (encoder, container, rate, scale, renderBtn, downloadBtn) => 
   };
 
   const checkFinish = () => {
-    if (index < images.length) {
+    if (index < allMeme[current].images.length) {
       addFrame(checkFinish);
     } else {
       encoder.finish();
@@ -137,6 +140,7 @@ const convertGif = (encoder, container, rate, scale, renderBtn, downloadBtn) => 
 
       renderBtn.disabled = false;
       downloadBtn.disabled = false;
+      [...subtitleInputs].forEach((input) => input.disabled = false);
     }
   }
 
@@ -150,69 +154,85 @@ const estimateSize = () => {
 
   const rate = (rateInput.value || 1)-0;
   const scale = scaleInput.value || "1";
-  const base = scale === "1" ? 9.9 : (scale === "0.7" ? 5.5 : (scale === "0.5" ? 3.1 : 0));
+  const base = allMeme[current].sizes[scale] || 0;
 
   const filesize = parseInt(base*10 / rate) / 10;
   fileSizeInput.value = `~${filesize}MB`;
 };
 
-document.addEventListener("DOMContentLoaded", (e) => {
-  const container = document.getElementById("image-container");
-  const renderBtn = document.getElementById("render-button");
-  const downloadBtn = document.getElementById("download-button");
-  const avatarInputs = document.querySelectorAll(".avatar-container input[type=file]");
-  const rateInputs = document.querySelectorAll(".options-container input[name=rate]");
-  const scaleInputs = document.querySelectorAll(".options-container input[name=scale]");
-  const resetBtns = document.querySelectorAll(".avatar-container button");
-  const highRateInput = document.getElementById("high-rate");
-  const scale70Input = document.getElementById("scale-70");
+const init = (meme) => {
+  if (meme) {
+    current = meme;
+  }
 
-  downloadBtn.disabled = true;
-  highRateInput.checked = true;
-  scale70Input.checked = true;
+  const img = document.querySelector("#image-container img");
+  img.setAttribute("src", `./images/${current}.gif`);
+
+  const container = document.querySelector(".subtitle-container");
+  container.innerHTML = "";
+  allMeme[current].subtitles.forEach((subtitle, i) => {
+    const div = document.createElement("div");
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    label.setAttribute("for", `subtitle-${i}`);
+    label.innerHTML = subtitle.speaker;
+    input.setAttribute("id", `subtitle-${i}`);
+    input.setAttribute("type", "text");
+    input.setAttribute("placeholder", subtitle.text);
+    div.appendChild(label);
+    div.appendChild(input);
+    container.appendChild(div);
+  });
+
+  const memeInput = document.getElementById(`meme-${current}`);
+  memeInput.checked = true;
 
   estimateSize();
 
+  const downloadBtn = document.getElementById("download-button");
+  downloadBtn.disabled = true;
+
+  blobURL = null;
+  blob = null;
+};
+
+document.addEventListener("DOMContentLoaded", (e) => {
+
+  const container = document.getElementById("image-container");
+  const renderBtn = document.getElementById("render-button");
+  const downloadBtn = document.getElementById("download-button");
+  const memeInputs = document.querySelectorAll(".meme-container input[name=meme]");
+  const rateInputs = document.querySelectorAll(".options-container input[name=rate]");
+  const scaleInputs = document.querySelectorAll(".options-container input[name=scale]");
+  const highRateInput = document.getElementById("high-rate");
+  const scale70Input = document.getElementById("scale-70");
+
+  highRateInput.checked = true;
+  scale70Input.checked = true;
+
+  init();
+
+  [...memeInputs].forEach((input) => input.addEventListener("change", () => init(input.value)));
   [...rateInputs].forEach((input) => input.addEventListener("change", estimateSize));
   [...scaleInputs].forEach((input) => input.addEventListener("change", estimateSize));
-  [...avatarInputs].forEach((input) => input.addEventListener("change", (e) => {
-    try {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = ((f) => {
-        const id = e.target.id;
-        const img = document.querySelector(`label[for=${id}] img`);
-        return (e) => {
-          img.setAttribute("src", e.target.result);
-          avatar[id] = e.target.result;
-        };
-      })(file);
-      reader.readAsDataURL(file);
-    } catch (e) {
-      console.error(e);
-    }
-  }));
-  [...resetBtns].forEach((btn) => btn.addEventListener("click", (e) => {
-    const id = e.target.getAttribute("for-id");
-    const img = document.querySelector(`label[for=${id}] img`);
-    img.setAttribute("src", img.getAttribute("data-src"));
-    avatar[id] = null;
-  }));
 
   renderBtn.addEventListener("click", (e) => {
+    const subtitleInputs = document.querySelectorAll(".subtitle-container input[type=text]");
     const rateInput = document.querySelector(".options-container input[name=rate]:checked");
     const scaleInput = document.querySelector(".options-container input[name=scale]:checked");
     renderBtn.disabled = true;
     renderProgressBar(container);
-    convertGif(new GIFEncoder(), container, (rateInput.value || 1)-0, (scaleInput.value || 1)-0, renderBtn, downloadBtn);
+    [...subtitleInputs].forEach((input) => input.disabled = true);
+    convertGif(new GIFEncoder(), container, (rateInput.value || 1)-0, (scaleInput.value || 1)-0, subtitleInputs, renderBtn, downloadBtn);
   });
   downloadBtn.addEventListener("click", (e) => {
     if (!!blob) {
-      FileSaver.saveAs(blob, "zuckerberg-meme.gif");
+      const filename = `zuckerberg-meme-${allMeme[current].name}.gif`;
+      FileSaver.saveAs(blob, filename);
     }
   });
 
-  tippy(".subtitle-container, .avatar-container, .options-container", {
+  tippy(".subtitle-container, .options-container", {
     placement: "left",
     arrow: true,
     size: "small",

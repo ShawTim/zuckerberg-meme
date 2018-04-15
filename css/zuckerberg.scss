@@ -40,6 +40,7 @@ canvas {
   }
 }
 
+.meme-container,
 .subtitle-container,
 .options-container {
   min-width: 400px;
@@ -51,6 +52,19 @@ canvas {
 
   input[type=text] {
     width: 100%;
+  }
+}
+
+.meme-container {
+  display: flex;
+  justify-content: space-between;
+  div {
+    display: flex;
+    align-items: center;
+
+    * {
+      margin: 5px;
+    }
   }
 }
 
@@ -98,6 +112,12 @@ canvas {
     color: #fff;
     font-weight: bold;
     cursor: pointer;
+
+    &:disabled {
+      background-color: #9CB4D8;
+      border-color: #9CB4D8;
+      cursor: initial;
+    }
   }
 }
 

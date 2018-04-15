@@ -26,13 +26,21 @@
   </head>
   <body>
     <div id="image-container">
-      <img src="./images/default.gif" />
+      <img />
     </div>
-    <div class="subtitle-container" title="You can input the subtitles here.">
-      <div><label for="subtitle01">Orrin Hatch:</label><input id="subtitle01" type="text" placeholder="How do you sustain a business model in which users don't pay for your service?" /></div>
-      <div><label for="subtitle02">Mark Zuckerberg:</label><input id="subtitle02" type="text" placeholder="Senator, we run ads." /></div>
-      <div><label for="subtitle03">(Smirk silently)</label><input id="subtitle03" type="text" placeholder="(Analytics Data Selling)" /></div>
+    <div class="meme-container" title="You can select which meme you want to generate.">
+      <div>
+        <input type="radio" name="meme" id="meme-werunads" value="werunads"/>
+        <img src="./images/werunads_s.gif" />
+        <label for="meme-werunads">We run ads</label>
+      </div>
+      <div>
+        <input type="radio" name="meme" id="meme-no" value="no"/>
+        <img src="./images/no_s.gif" />
+        <label for="meme-no">No</label>
+      </div>
     </div>
+    <div class="subtitle-container" title="You can input the subtitles here."></div>
     <div class="options-container" title="You can configure the generator setting here.">
       <div>
         <span>Smoothness</span>
