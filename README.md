@@ -1,11 +1,13 @@
 # zuckerberg-meme
-Mark Zuckerberg meme generator
+## Mark Zuckerberg meme generator
 
-"Senator, we run ads."
+### "Senator, we run ads."
+![We run ads](https://shawtim.github.io/zuckerberg-meme/images/werunads_s.gif)
+
+### "NO."
+![NO](https://shawtim.github.io/zuckerberg-meme/images/no_s.gif)
 
 See [demo](https://shawtim.github.io/zuckerberg-meme/) on Github page.
-
-![Introduction](https://shawtim.github.io/zuckerberg-meme/intro.jpg)
 
 ### Installation
 `npm i`
