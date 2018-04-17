@@ -62,13 +62,17 @@ const fillSubtitle = (context, subtitle, scale) => {
 
     const words = subtitle.split(" ");
     const subtitles = [];
-    let index = 1;
-    let str = words[0];
+    let index = 0;
+    let str = "";
     while (index < words.length) {
-      str += ` ${words[index++]}`;
-      if (str.length >= 30) {
+      const newStr = words[index++];
+      const length1 = str.split("").reduce((sum, s, i) => sum + (str.charCodeAt(i) > 255 ? 2 : 1), 0);
+      const length2 = newStr.split("").reduce((sum, s, i) => sum + (newStr.charCodeAt(i) > 255 ? 2 : 1), 0);
+      if (length1+length2 >= 30) {
         subtitles.push(str);
-        str = words[index++];
+        str = newStr;
+      } else {
+        str += (length1 ? " " : "") + newStr;
       }
     }
     if (str) {
@@ -232,7 +236,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
     }
   });
 
-  tippy(".subtitle-container, .options-container", {
+  tippy(".meme-container .subtitle-container, .options-container", {
     placement: "left",
     arrow: true,
     size: "small",

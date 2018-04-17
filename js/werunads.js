@@ -15,7 +15,7 @@ export default {
     to: 82,
   }, {
     speaker: "(Smirk silently)",
-    text: "(Analytics Data Selling)",
+    text: "",
     from: 83,
     to: 9999,
   }],
